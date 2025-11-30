@@ -9,6 +9,8 @@ void remove_cells(int[][9]);
 void sudoku();
 void print_initial_board(int[][9]);
 void input(int, int, int, int[][9], int[][9]);
+void hint(int row, int col, int array[][9], int array1[][9]);
+
 
 //MAIN
 int main() {
@@ -19,8 +21,8 @@ int main() {
 //FUNCTION DEFINITIONS
 void sudoku() {
     cout << "====== WELCOME TO SUDOKU GAME ======\n\n";
-    int array1[9][9], array[9][9], row, col, numb, num, attempts
-        srand(time(0));
+    int array1[9][9], array[9][9], row, col, numb, num, attempts, hints = 3;
+    srand(time(0));
 
     // initialize with zeros
     for (int i = 0; i < 9; i++)
@@ -62,14 +64,26 @@ void sudoku() {
     print_initial_board(array);
     //taking input for input funtion
     while (true) {
-        cout << "Enter the row, column and number\n";
+        cout << "Enter the row, column and number (Enter -1 as number to get hint)\n";
         cout << "Row: ";
         cin >> row;
         cout << "Column: ";
         cin >> col;
         cout << "Number: ";
         cin >> numb;
-        input(row - 1, col - 1, numb, array, array1);
+        if (numb == -1) {
+            if (hints > 0) {
+                hint(row - 1, col - 1, array, array1);
+                hints--;
+                cout << "Hints left: " << hints << endl;
+            }
+            else {
+                cout << "No hints left!\n";
+            }
+        }
+        else {
+            input(row - 1, col - 1, numb, array, array1);
+        }
         print_initial_board(array);
     }
 
@@ -176,5 +190,18 @@ void input(int row, int col, int num, int array[9][9], int array1[][9]) {
         cout << "Invalid number entered!\n";
         cout << "The board without changes is:\n";
     }
-
+}
+void hint(int row, int col, int array[][9], int array1[][9]) {
+    if (row >= 0 && row < 9 && col >= 0 && col < 9) {
+        if (array[row][col] == 0) {
+            cout << "Hint: The correct number at (" << row + 1 << "," << col + 1 << ") is "
+                << array1[row][col] << endl;
+        }
+        else {
+            cout << "This cell already has a number. You can only get hints on empty cells.\n";
+        }
+    }
+    else {
+        cout << "Invalid row or column!\n";
+    }
 }
