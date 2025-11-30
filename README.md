@@ -2,9 +2,9 @@
 C++ code for sudoku interactive console based puzzle game.
 ## Team Information
 **Team Members:**
--**Abeeha Noor** – Programmer 1; Made base code, added different functions, made README, did part of formatting.
--**Aliza Batool** – Programmer 2; Made modifications, added different functions, did part of formatting and documentation.
--**Fatima Zahra Mustapha** – --
+- **Abeeha Noor** – Programmer 1; Made base code, added different functions, made README, did part of formatting.
+- **Aliza Batool** – Programmer 2; Made modifications, added different functions, did part of formatting and documentation.
+- **Fatima Zahra Mustapha** – --
 
 ## Problem Description
 Sudoku Game is an interactive, console-based number puzzle where you must complete a 9×9 Sudoku grid using logic, hints, and careful moves. Each game generates a new randomized board with adjustable difficulty levels.
