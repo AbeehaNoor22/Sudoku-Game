@@ -8,7 +8,7 @@ bool is_valid(int, int, int, int[][9]);
 void remove_cells(int[][9]);
 void sudoku();
 void print_initial_board(int[][9]);
-void input(int, int, int, int[][9]);
+void input(int, int, int, int[][9], int[][9]);
 
 //MAIN
 int main() {
@@ -19,13 +19,13 @@ int main() {
 //FUNCTION DEFINITIONS
 void sudoku() {
     cout << "====== WELCOME TO SUDOKU GAME ======\n\n";
-    int array[9][9], row, col, num;
+    int array1[9][9], array[9][9], row, col, num;
     srand(time(0));
 
-    // initialize
+    // initialize with zeros
     for (int i = 0; i < 9; i++)
         for (int j = 0; j < 9; j++)
-            array[i][j] = 0;
+            array1[i][j] = 0;
 
     // fill board
     for (int i = 0; i < 9; i++) {
@@ -40,18 +40,24 @@ void sudoku() {
                 // if too many failed attempts reset row
                 if (attempts > 10) {
                     for (int c = 0; c < 9; c++)
-                        array[i][c] = 0;
+                        array1[i][c] = 0;
                     j = -1;   // restart row (loop will ++j = 0)
                     break;
                 }
 
-                if (is_valid(i, j, num, array)) {
-                    array[i][j] = num;
+                if (is_valid(i, j, num, array1)) {
+                    array1[i][j] = num;
                     break;
                 }
             }
         }
     }
+    for (int i = 0; i < 9; i++) {
+        for (int j = 0; j < 9; j++) {
+            array[i][j] = array1[i][j];
+        }
+    }
+
     remove_cells(array);
     print_initial_board(array);
     while (true) {
@@ -62,9 +68,7 @@ void sudoku() {
         cin >> col;
         cout << "Number: ";
         cin >> num;
-        input(row, col, num, array);
-
-        cout << "The board after this move is:\n";
+        input(row - 1, col - 1, num, array, array1);
         print_initial_board(array);
     }
 
@@ -141,11 +145,35 @@ void print_initial_board(int array[][9]) {
             cout << "* == == ==  * == == ==  * == == ==  *\n";
     }
 }
-void input(int row, int col, int num, int array[9][9]) {
-    if (array[row][col] == 0) {
-        array[row][col] = num;
+void input(int row, int col, int num, int array[9][9], int array1[][9]) {
+    if (row >= 0 && row < 9 && col >= 0 && col < 9 && num <= 9 && num >= 1) {
+        if (num != 0) {
+            bool check = is_valid(row, col, num, array);
+            if (array[row][col] == 0) {
+                array[row][col] = num;
+            }
+            if (!check) {
+                cout << "The number is not valid here.\n";
+                cout << "Enter row, column,0 to undo your current move.\n";
+                cout << "The board after this move is:\n";
+            }
+            else if (check && num != array1[row][col]) {
+                cout << "The number is valid here\nBut it does not match the given board's solution!\n";
+                cout << "Enter row, column,0 to undo your current move.\n";
+                cout << "The board after this move is:\n";
+            }
+            else if (check && num == array1[row][col]) {
+                cout << "Correct move!!\n";
+                cout << "The board after this move is:\n";
+            }
+        }
+        else if (num == 0) {
+            array[row][col] = 0;
+        }
     }
-    if (!is_valid(row, col, num, array)) {
-        cout << "The number is not valid here.\n";
+    else {
+        cout << "Invalid number entered!\n";
+        cout << "The board without changes is:\n";
     }
+
 }
