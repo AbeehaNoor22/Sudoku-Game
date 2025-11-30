@@ -6,11 +6,12 @@ using namespace std;
 //FUNCTION PROTOTYPES
 bool is_valid(int, int, int, int[][9]);
 void remove_cells(int[][9]);
-void sudoku(int&lives);
+void sudoku(int&);
 void print_initial_board(int[][9]);
-void input(int, int, int, int[][9], int[][9],int&lives);
-bool hint(int row, int col, int array[][9], int array1[][9]);
-
+void input(int, int, int, int[][9], int[][9], int& lives);
+bool hint(int, int, int[][9], int[][9]);
+void checker(int[][9], int[][9]);
+void solver(int[][9], int[][9]);
 
 //MAIN
 int main() {
@@ -20,10 +21,13 @@ int main() {
 }
 
 //FUNCTION DEFINITIONS
-void sudoku(int&lives) {
-    cout << "====== WELCOME TO SUDOKU GAME ======\n\n";
-    int array1[9][9], array[9][9], row, col, numb, num, attempts, hints = 3;
+
+//main sudoku game function
+void sudoku(int& lives) {
+    int array1[9][9], array[9][9], row, col, numb, num, attempts, hints = 3, roww, coll;
+    char flow;
     srand(time(0));
+    cout << "====== WELCOME TO SUDOKU GAME ======\n\n";
 
     // initialize with zeros
     for (int i = 0; i < 9; i++)
@@ -64,19 +68,28 @@ void sudoku(int&lives) {
     remove_cells(array);
     print_initial_board(array);
     //taking input for input funtion
-    while (lives>0) {
-        cout << "Lives remaining = " << lives<<endl;
-        cout << "Hints remaining = " << hints << endl;
-        cout << "Enter the row, column and number (Enter -1 as number to get hint)\n";
-        cout << "Row: ";
-        cin >> row;
-        cout << "Column: ";
-        cin >> col;
-        cout << "Number: ";
-        cin >> numb;
-        if (numb == -1) {
+    while (lives > 0) {
+        cout << "Enter \n-->'m' to make the next move\n-->'h' to get hint\n-->'c' to check whether the current elements match the original solution\n-->'s' for complete solution\n";
+        cin >> flow;
+        if (flow == 'm') {
+            cout << "Enter the row, column and number\n";
+            cout << "Row: ";
+            cin >> row;
+            cout << "Column: ";
+            cin >> col;
+            cout << "Number: ";
+            cin >> numb;
+            input(row - 1, col - 1, numb, array, array1, lives);
+            print_initial_board(array);
+        }
+        else if (flow == 'h') {
             if (hints > 0) {
-                bool used = hint(row - 1, col - 1, array, array1);
+                cout << "Enter the row, column where the hint is required\n";
+                cout << "Row: ";
+                cin >> roww;
+                cout << "Column: ";
+                cin >> coll;
+                bool used = hint(roww - 1, coll - 1, array, array1);
                 if (used == 1) {
                     hints--;
                 }
@@ -84,20 +97,20 @@ void sudoku(int&lives) {
             else {
                 cout << "No hints left!\n";
             }
+            print_initial_board(array);
         }
-        else {
-            input(row - 1, col - 1, numb, array, array1,lives);
+        else if (flow == 'c') {
+            checker(array, array1);
+            print_initial_board(array);
         }
-        print_initial_board(array);
+        else if (flow == 's') {
+            solver(array, array1);
+            print_initial_board(array);
+        }
     }
-    if (lives == 0) {
-        cout << "\nYou lost!The solution of this board was:\n\n";
-        print_initial_board(array1);
-
-    }
-
 }
 
+//function that initially removes cells for board generation
 void remove_cells(int array[][9]) {
     int choice, target, removed = 0;
     cout << "Choose the difficulty level:\n\n1--> Easy\n2--> Medium\n3--> Hard\n";
@@ -126,6 +139,7 @@ void remove_cells(int array[][9]) {
     }
 }
 
+//function to check whether the element is valid acc to sudoku rules or not
 bool is_valid(int i, int j, int num, int array[][9]) {
 
     // check row
@@ -150,6 +164,7 @@ bool is_valid(int i, int j, int num, int array[][9]) {
     return true;
 }
 
+//printing board function
 void print_initial_board(int array[][9]) {
     cout << "* == == ==  * == == ==  * == == ==  *\n";
     for (int i = 0; i < 9; i++) {
@@ -169,7 +184,9 @@ void print_initial_board(int array[][9]) {
             cout << "* == == ==  * == == ==  * == == ==  *\n";
     }
 }
-void input(int row, int col, int num, int array[9][9], int array1[][9],int&lives) {
+
+//input function
+void input(int row, int col, int num, int array[9][9], int array1[][9], int& lives) {
     if (row >= 0 && row < 9 && col >= 0 && col < 9 && num <= 9 && num >= 1) {
         if (num != 0) {
             bool check = is_valid(row, col, num, array);
@@ -202,6 +219,8 @@ void input(int row, int col, int num, int array[9][9], int array1[][9],int&lives
         cout << "The board without changes is:\n";
     }
 }
+
+//hint function
 bool hint(int row, int col, int array[][9], int array1[][9]) {
     if (row >= 0 && row < 9 && col >= 0 && col < 9) {
         if (array[row][col] == 0) {
@@ -220,3 +239,30 @@ bool hint(int row, int col, int array[][9], int array1[][9]) {
         return false;
     }
 }
+
+//checker function
+void checker(int array[][9], int array1[][9]) {
+    int wrong = 0;
+    for (int i = 0; i < 9; i++) {
+        for (int j = 0; j < 9; j++) {
+            if (array[i][j] != 0) {
+                if (array[i][j] != array1[i][j]) {
+                    cout << "Entered element at (row: " << i + 1 << ",column: " << j + 1 << ") is in correct\n";
+                    ++wrong;
+                }
+            }
+        }
+    }
+    if (wrong == 0) { cout << "Your board is checked. \nAll elements are in the right place!"; }
+}
+
+//solver function
+void solver(int array[][9], int array1[][9]) {
+    for (int i = 0; i < 9; i++) {
+        for (int j = 0; j < 9; j++) {
+            array[i][j] = array1[i][j];
+
+        }
+    }
+}
+
