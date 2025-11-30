@@ -125,12 +125,12 @@ void sudoku(int& lives) {
             break;
         }
     }
-        //if lives end
-        if (lives == 0) {
-            cout << "\nYou lost!The solution of this board was:\n\n";
-            print_initial_board(array1);
-        }
-    
+    //if lives end
+    if (lives == 0) {
+        cout << "\nYou lost!The solution of this board was:\n\n";
+        print_initial_board(array1);
+    }
+
 }
 
 //function that initially removes cells for board generation
@@ -210,7 +210,7 @@ void print_initial_board(int array[][9]) {
 
 //input function
 void input(int row, int col, int num, int array[9][9], int array1[][9], int& lives) {
-    if (row >= 0 && row < 9 && col >= 0 && col < 9 && num <= 9 && num >= 1) {
+    if (row >= 0 && row < 9 && col >= 0 && col < 9 && num <= 9 && num >= 0) {
         if (num != 0) {
             bool check = is_valid(row, col, num, array);
             //added input validation for already filled cells
@@ -302,5 +302,5 @@ bool win(int array[][9], int array1[][9]) {
             }
         }
     }
-        return true;
-    }
+    return true;
+}
