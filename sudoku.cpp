@@ -12,6 +12,7 @@ void input(int, int, int, int[][9], int[][9], int& lives);
 bool hint(int, int, int[][9], int[][9]);
 void checker(int[][9], int[][9]);
 void solver(int[][9], int[][9]);
+bool win(int[][9], int[][9]);
 
 //MAIN
 int main() {
@@ -69,6 +70,8 @@ void sudoku(int& lives) {
     print_initial_board(array);
     //taking input for input funtion
     while (lives > 0) {
+        cout << "Lives remaining = " << lives << endl;
+        cout << "Hints remaining = " << hints << endl;
         cout << "Enter \n-->'m' to make the next move\n-->'h' to get hint\n-->'c' to check whether the current elements match the original solution\n-->'s' for complete solution\n";
         cin >> flow;
         if (flow == 'm') {
@@ -80,8 +83,15 @@ void sudoku(int& lives) {
             cout << "Number: ";
             cin >> numb;
             input(row - 1, col - 1, numb, array, array1, lives);
+            //check win
+            if (win(array, array1)) {
+                print_initial_board(array);
+                cout << "\nYou won! You did the correct solution!\n";
+                break;
+            }
             print_initial_board(array);
         }
+
         else if (flow == 'h') {
             if (hints > 0) {
                 cout << "Enter the row, column where the hint is required\n";
@@ -97,6 +107,12 @@ void sudoku(int& lives) {
             else {
                 cout << "No hints left!\n";
             }
+            //check win
+            if (win(array, array1)) {
+                print_initial_board(array);
+                cout << "\nYou won! You did the correct solution!\n";
+                break;
+            }
             print_initial_board(array);
         }
         else if (flow == 'c') {
@@ -106,8 +122,15 @@ void sudoku(int& lives) {
         else if (flow == 's') {
             solver(array, array1);
             print_initial_board(array);
+            break;
         }
     }
+        //if lives end
+        if (lives == 0) {
+            cout << "\nYou lost!The solution of this board was:\n\n";
+            print_initial_board(array1);
+        }
+    
 }
 
 //function that initially removes cells for board generation
@@ -190,9 +213,15 @@ void input(int row, int col, int num, int array[9][9], int array1[][9], int& liv
     if (row >= 0 && row < 9 && col >= 0 && col < 9 && num <= 9 && num >= 1) {
         if (num != 0) {
             bool check = is_valid(row, col, num, array);
-            if (array[row][col] == 0) {
+            //added input validation for already filled cells
+            if (array[row][col] != 0) {
+                cout << "You cannot change original fixed numbers!\n";
+                return; // exits function immediately
+            }
+            else {
                 array[row][col] = num;
             }
+
             if (!check) {
                 cout << "The number is not valid here.\n";
                 cout << "Enter row, column,0 to undo your current move.\n";
@@ -247,7 +276,7 @@ void checker(int array[][9], int array1[][9]) {
         for (int j = 0; j < 9; j++) {
             if (array[i][j] != 0) {
                 if (array[i][j] != array1[i][j]) {
-                    cout << "Entered element at (row: " << i + 1 << ",column: " << j + 1 << ") is in correct\n";
+                    cout << "Entered element at (row: " << i + 1 << ",column: " << j + 1 << ") is incorrect\n";
                     ++wrong;
                 }
             }
@@ -265,4 +294,13 @@ void solver(int array[][9], int array1[][9]) {
         }
     }
 }
-
+bool win(int array[][9], int array1[][9]) {
+    for (int i = 0; i < 9; i++) {
+        for (int j = 0; j < 9; j++) {
+            if (array[i][j] != array1[i][j]) {
+                return false;
+            }
+        }
+    }
+        return true;
+    }
