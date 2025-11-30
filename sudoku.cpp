@@ -19,8 +19,8 @@ int main() {
 //FUNCTION DEFINITIONS
 void sudoku() {
     cout << "====== WELCOME TO SUDOKU GAME ======\n\n";
-    int array1[9][9], array[9][9], row, col, num;
-    srand(time(0));
+    int array1[9][9], array[9][9], row, col, numb, num, attempts
+        srand(time(0));
 
     // initialize with zeros
     for (int i = 0; i < 9; i++)
@@ -31,8 +31,8 @@ void sudoku() {
     for (int i = 0; i < 9; i++) {
         for (int j = 0; j < 9; j++) {
 
-            int attempts = 0;
-            int num;
+            attempts = 0;
+            num;
 
             while (true) {
                 num = rand() % 9 + 1;
@@ -52,14 +52,15 @@ void sudoku() {
             }
         }
     }
+    //storing the original array
     for (int i = 0; i < 9; i++) {
         for (int j = 0; j < 9; j++) {
             array[i][j] = array1[i][j];
         }
     }
-
     remove_cells(array);
     print_initial_board(array);
+    //taking input for input funtion
     while (true) {
         cout << "Enter the row, column and number\n";
         cout << "Row: ";
@@ -67,8 +68,8 @@ void sudoku() {
         cout << "Column: ";
         cin >> col;
         cout << "Number: ";
-        cin >> num;
-        input(row - 1, col - 1, num, array, array1);
+        cin >> numb;
+        input(row - 1, col - 1, numb, array, array1);
         print_initial_board(array);
     }
 
