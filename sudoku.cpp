@@ -9,7 +9,7 @@ void remove_cells(int[][9]);
 void sudoku();
 void print_initial_board(int[][9]);
 void input(int, int, int, int[][9], int[][9]);
-void hint(int row, int col, int array[][9], int array1[][9]);
+bool hint(int row, int col, int array[][9], int array1[][9]);
 
 
 //MAIN
@@ -73,9 +73,11 @@ void sudoku() {
         cin >> numb;
         if (numb == -1) {
             if (hints > 0) {
-                hint(row - 1, col - 1, array, array1);
-                hints--;
-                cout << "Hints left: " << hints << endl;
+                bool used = hint(row - 1, col - 1, array, array1);
+                if (used == 1) {
+                    hints--;
+                }
+                    cout << "Hints left: " << hints << endl;
             }
             else {
                 cout << "No hints left!\n";
@@ -191,17 +193,21 @@ void input(int row, int col, int num, int array[9][9], int array1[][9]) {
         cout << "The board without changes is:\n";
     }
 }
-void hint(int row, int col, int array[][9], int array1[][9]) {
+bool hint(int row, int col, int array[][9], int array1[][9]) {
     if (row >= 0 && row < 9 && col >= 0 && col < 9) {
         if (array[row][col] == 0) {
             cout << "Hint: The correct number at (" << row + 1 << "," << col + 1 << ") is "
                 << array1[row][col] << endl;
+            array[row][col] = array1[row][col];
+            return true;
         }
         else {
             cout << "This cell already has a number. You can only get hints on empty cells.\n";
+            return false;
         }
     }
     else {
         cout << "Invalid row or column!\n";
+        return false;
     }
 }
