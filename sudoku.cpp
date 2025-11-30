@@ -6,20 +6,21 @@ using namespace std;
 //FUNCTION PROTOTYPES
 bool is_valid(int, int, int, int[][9]);
 void remove_cells(int[][9]);
-void sudoku();
+void sudoku(int&lives);
 void print_initial_board(int[][9]);
-void input(int, int, int, int[][9], int[][9]);
+void input(int, int, int, int[][9], int[][9],int&lives);
 bool hint(int row, int col, int array[][9], int array1[][9]);
 
 
 //MAIN
 int main() {
-    sudoku();
+    int lives = 5;
+    sudoku(lives);
     system("pause");
 }
 
 //FUNCTION DEFINITIONS
-void sudoku() {
+void sudoku(int&lives) {
     cout << "====== WELCOME TO SUDOKU GAME ======\n\n";
     int array1[9][9], array[9][9], row, col, numb, num, attempts, hints = 3;
     srand(time(0));
@@ -63,7 +64,9 @@ void sudoku() {
     remove_cells(array);
     print_initial_board(array);
     //taking input for input funtion
-    while (true) {
+    while (lives>0) {
+        cout << "Lives remaining = " << lives<<endl;
+        cout << "Hints remaining = " << hints << endl;
         cout << "Enter the row, column and number (Enter -1 as number to get hint)\n";
         cout << "Row: ";
         cin >> row;
@@ -77,16 +80,20 @@ void sudoku() {
                 if (used == 1) {
                     hints--;
                 }
-                    cout << "Hints left: " << hints << endl;
             }
             else {
                 cout << "No hints left!\n";
             }
         }
         else {
-            input(row - 1, col - 1, numb, array, array1);
+            input(row - 1, col - 1, numb, array, array1,lives);
         }
         print_initial_board(array);
+    }
+    if (lives == 0) {
+        cout << "\nYou lost!The solution of this board was:\n\n";
+        print_initial_board(array1);
+
     }
 
 }
@@ -162,7 +169,7 @@ void print_initial_board(int array[][9]) {
             cout << "* == == ==  * == == ==  * == == ==  *\n";
     }
 }
-void input(int row, int col, int num, int array[9][9], int array1[][9]) {
+void input(int row, int col, int num, int array[9][9], int array1[][9],int&lives) {
     if (row >= 0 && row < 9 && col >= 0 && col < 9 && num <= 9 && num >= 1) {
         if (num != 0) {
             bool check = is_valid(row, col, num, array);
@@ -172,10 +179,12 @@ void input(int row, int col, int num, int array[9][9], int array1[][9]) {
             if (!check) {
                 cout << "The number is not valid here.\n";
                 cout << "Enter row, column,0 to undo your current move.\n";
+                lives--;
                 cout << "The board after this move is:\n";
             }
             else if (check && num != array1[row][col]) {
                 cout << "The number is valid here\nBut it does not match the given board's solution!\n";
+                lives--;
                 cout << "Enter row, column,0 to undo your current move.\n";
                 cout << "The board after this move is:\n";
             }
