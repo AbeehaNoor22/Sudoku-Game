@@ -1,6 +1,8 @@
 ﻿#include<iostream>
 #include<cstdlib>
 #include<ctime>
+#include<chrono>
+#include<thread>
 using namespace std;
 
 //FUNCTION PROTOTYPES
@@ -13,6 +15,7 @@ bool hint(int, int, int[][9], int[][9]);
 void checker(int[][9], int[][9]);
 void solver(int[][9], int[][9]);
 bool win(int[][9], int[][9]);
+void waitSeconds(int sec);
 
 //MAIN
 int main() {
@@ -28,7 +31,7 @@ void sudoku(int& lives) {
     int array1[9][9], array[9][9], row, col, numb, num, attempts, hints = 3, roww, coll;
     char flow;
     srand(time(0));
-    cout << "====== WELCOME TO SUDOKU GAME ======\n\n";
+    cout << "====== WELCOME TO SUDOKU GAME ======\n\n"; waitSeconds(1);
 
     // initialize with zeros
     for (int i = 0; i < 9; i++)
@@ -70,9 +73,14 @@ void sudoku(int& lives) {
     print_initial_board(array);
     //taking input for input funtion
     while (lives > 0) {
-        cout << "Lives remaining = " << lives << endl;
-        cout << "Hints remaining = " << hints << endl;
-        cout << "Enter \n-->'m' to make the next move\n-->'h' to get hint\n-->'c' to check whether the current elements match the original solution\n-->'s' for complete solution\n";
+        cout << "Lives remaining = " << lives << endl; waitSeconds(1);
+        cout << "Hints remaining = " << hints << endl; waitSeconds(1);
+        cout << "Enter \n"; waitSeconds(1);
+        cout << "--> 'm' to make the next move\n"; waitSeconds(1);
+        cout << "--> 'h' to get hint\n"; waitSeconds(1);
+        cout << "--> 'c' to check whether the current elements match the original solution\n"; waitSeconds(1);
+        cout<<"--> 's' for complete solution\n"; waitSeconds(1);
+        cout << "Enter your choice:";
         cin >> flow;
         if (flow == 'm') {
             cout << "Enter the row, column and number\n";
@@ -120,23 +128,28 @@ void sudoku(int& lives) {
             print_initial_board(array);
         }
         else if (flow == 's') {
+            cout << "The correct solution of the board was: \n"; waitSeconds(1);
             solver(array, array1);
             print_initial_board(array);
             break;
         }
     }
-    //if lives end
-    if (lives == 0) {
-        cout << "\nYou lost!The solution of this board was:\n\n";
-        print_initial_board(array1);
-    }
-
+        //if lives end
+        if (lives == 0) {
+            cout << "\nYou lost!The solution of this board was:\n\n";
+            print_initial_board(array1);
+        }
+    
 }
 
 //function that initially removes cells for board generation
 void remove_cells(int array[][9]) {
     int choice, target, removed = 0;
-    cout << "Choose the difficulty level:\n\n1--> Easy\n2--> Medium\n3--> Hard\n";
+    cout << "Choose the difficulty level:\n\n"; waitSeconds(1);
+    cout << "1-- > Easy\n"; waitSeconds(1);
+    cout << "2-- > Medium\n"; waitSeconds(1);
+    cout<<"3-- > Hard\n"; waitSeconds(1);
+    cout << "Enter your choice: ";
     cin >> choice;
     switch (choice) {
     case 1:
@@ -215,7 +228,7 @@ void input(int row, int col, int num, int array[9][9], int array1[][9], int& liv
             bool check = is_valid(row, col, num, array);
             //added input validation for already filled cells
             if (array[row][col] != 0) {
-                cout << "You cannot change original fixed numbers!\n";
+                cout << "You cannot change original fixed numbers!\n"; waitSeconds(1);
                 return; // exits function immediately
             }
             else {
@@ -223,20 +236,20 @@ void input(int row, int col, int num, int array[9][9], int array1[][9], int& liv
             }
 
             if (!check) {
-                cout << "The number is not valid here.\n";
-                cout << "Enter row, column,0 to undo your current move.\n";
+                cout << "The number is not valid here.\n"; waitSeconds(1);
+                cout << "Enter row, column,0 to undo your current move.\n"; waitSeconds(1);
                 lives--;
-                cout << "The board after this move is:\n";
+                cout << "The board after this move is:\n"; waitSeconds(1);
             }
             else if (check && num != array1[row][col]) {
-                cout << "The number is valid here\nBut it does not match the given board's solution!\n";
+                cout << "The number is valid here\nBut it does not match the given board's solution!\n"; waitSeconds(1);
                 lives--;
-                cout << "Enter row, column,0 to undo your current move.\n";
-                cout << "The board after this move is:\n";
+                cout << "Enter row, column,0 to undo your current move.\n"; waitSeconds(1);
+                cout << "The board after this move is:\n"; waitSeconds(1);
             }
             else if (check && num == array1[row][col]) {
-                cout << "Correct move!!\n";
-                cout << "The board after this move is:\n";
+                cout << "Correct move!!\n"; waitSeconds(1);
+                cout << "The board after this move is:\n"; waitSeconds(1);
             }
         }
         else if (num == 0) {
@@ -244,8 +257,8 @@ void input(int row, int col, int num, int array[9][9], int array1[][9], int& liv
         }
     }
     else {
-        cout << "Invalid number entered!\n";
-        cout << "The board without changes is:\n";
+        cout << "Invalid number entered!\n"; waitSeconds(1);
+        cout << "The board without changes is:\n"; waitSeconds(1);
     }
 }
 
@@ -282,7 +295,7 @@ void checker(int array[][9], int array1[][9]) {
             }
         }
     }
-    if (wrong == 0) { cout << "Your board is checked. \nAll elements are in the right place!"; }
+    if (wrong == 0) { cout << "Your board is checked. \nAll elements are in the right place!\n"; }
 }
 
 //solver function
@@ -302,5 +315,8 @@ bool win(int array[][9], int array1[][9]) {
             }
         }
     }
-    return true;
+        return true;
+    }
+void waitSeconds(int sec) {
+    std::this_thread::sleep_for(std::chrono::seconds(sec));
 }
